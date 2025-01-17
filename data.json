@@ -1,0 +1,42 @@
+  [
+    {
+      "title": "StLucia",
+      "image": "https://i.imgur.com/nlzfd2M.jpg",
+      "date": "4/29/2024",
+      "description": "In our Mercedes tour van about to go on a wine tasting adventure.",
+      "blogArray": [
+          {
+          "blogName": "Roseann",
+          "blogDate": "6/12/2024",
+          "comments": "Just some text",
+          "rating": "10"
+        },
+        {
+          "blogName": "Carole",
+          "blogDate": "4/29/2024",
+          "comments": "Remember the sound the tour guide kept making?",
+          "rating": "5"
+        }
+      ]
+   },
+   {
+      "title": "test 2 StLucia",
+      "image": "https://i.imgur.com/nlzfd2M.jpg",
+      "date": "4/29/2024",
+      "description": "In our Mercedes tour van about to go on a wine tasting adventure.",
+      "blogArray": [
+          {
+          "blogName": "Roseann",
+          "blogDate": "6/12/2024",
+          "comments": "Just some more text",
+          "rating": "10"
+        },
+        {
+          "blogName": "Carole",
+          "blogDate": "4/29/2024",
+          "comments": "Remember the sound the tour guide kept making?",
+          "rating": "5"
+        }
+      ]
+    }
+]
