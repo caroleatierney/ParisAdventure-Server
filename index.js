@@ -102,110 +102,107 @@ app.get("/api/parismemories/:postId/blogArray", async (req, res) => {
   }
 });
 
-// Get blog array by postId and specific array item
-app.get("/api/parismemories/:postId/blogArray/:itemId", async (req, res) => {
-  try {
-    const { postId, itemId } = req.params;
+  // Get blog array by postId and specific array item
+  app.get("/api/parismemories/:postId/blogArray/:itemId", async (req, res) => {
+    try {
+      const { postId, itemId } = req.params;
 
-    // Check if the postId and itemId are valid ObjectIds
-    if (
-      !mongoose.isValidObjectId(postId) ||
-      !mongoose.isValidObjectId(itemId)
-    ) {
-      return res.status(400).json({ error: "Invalid ID" });
+      // Check if the postId and itemId are valid ObjectIds
+      if (
+        !mongoose.isValidObjectId(postId) ||
+        !mongoose.isValidObjectId(itemId)
+      ) {
+        return res.status(400).json({ error: "Invalid ID" });
+        }
+        const data = await ParisMemories.findById(postId, "blogArray");
+        if (!data) {
+          return res.status(404).json({ error: "Blog not found" });
+        }
+
+        // Find the specific item in the blogArray
+        const item = data.blogArray.find((item) => item._id.toString() === itemId);
+        if (!item) {
+          return res.status(404).json({ error: "Blog array item not found" });
+        }
+        res.status(200).json(item);
+      } catch (error) {
+        console.error("Error fetching blogArray:", error);
+        res
+          .status(500)
+          .json({ error: "An error occurred while fetching the blogArray." });
+      }
+  });
+
+  // Create a post
+  app.post("/api/parismemories", async (req, res) => {
+    try {
+      const data = await ParisMemories.create(req.body);
+      res.status(201).json(data);
+    } catch (error) {
+      console.error("Error creating blog:", error);
+      res.status(500).json({ error: "An error occurred while creating a post." });
     }
+  });
 
-    const data = await ParisMemories.findById(postId, "blogArray");
+  // %%%%%%%%%%%%% not working with lightening
+  // Update a post by postId
+  app.put("/api/parismemories/:postId", async (req, res) => {
+    try {
+      // send data through a body
 
-    if (!data) {
-      return res.status(404).json({ error: "Blog not found" });
+      const postId = req.params.postId;
+      const { title, image, date, description, blogArray } = req.body;
+
+      const updatedPost = await ParisMemories.findByIdAndUpdate(
+        postId,
+        {
+          title,
+          image,
+          date,
+          description,
+          blogArray,
+        },
+        { new: true }
+      );
+      // res.json(updatedPost)
+      // console.log("Data" + updatedPost)
+
+      if (!updatedPost) {
+        return res.status(404).json({ error: "Blog not found" });
+      }
+      res.status(200).json(updatedPost);
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while updating the blog." });
     }
+  });
 
-    // Find the specific item in the blogArray
-    const item = data.blogArray.find((item) => item._id.toString() === itemId);
+  //  Update blogArray by postId
+  app.put("/api/parismemories/:postId/blogArray", async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const { newBlog } = req.body;
 
-    if (!item) {
-      return res.status(404).json({ error: "Blog array item not found" });
+      const updatedPost = await ParisMemories.findByIdAndUpdate(
+        postId,
+        { $push: { blogArray: newBlog } },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedPost) {
+        return res.status(404).json({ error: "Blog not found" });
+      }
+
+      res.status(200).json(updatedPost);
+    } catch (error) {
+      console.error("Error updating blogArray:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while updating the blogArray." });
     }
-
-    res.status(200).json(item);
-  } catch (error) {
-    console.error("Error fetching blogArray:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching the blogArray." });
-  }
-});
-
-// Create a post
-app.post("/api/parismemories", async (req, res) => {
-  try {
-    const data = await ParisMemories.create(req.body);
-    res.status(201).json(data);
-  } catch (error) {
-    console.error("Error creating blog:", error);
-    res.status(500).json({ error: "An error occurred while creating a post." });
-  }
-});
-
-// Update a post by postId
-app.put("/api/parismemories/:postId", async (req, res) => {
-  try {
-    // send data through a body
-
-    const postId = req.params.postId;
-    const { title, image, date, description, blogArray } = req.body;
-
-    const updatedPost = await ParisMemories.findByIdAndUpdate(
-      postId,
-      {
-        title,
-        image,
-        date,
-        description,
-        blogArray,
-      },
-      { new: true }
-    );
-    res.json(data)
-    console.log("Data" + data)
-
-    if (!updatedPost) {
-      return res.status(404).json({ error: "Blog not found" });
-    }
-    res.status(200).json(updatedPost);
-  } catch (error) {
-    console.error("Error updating blog:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while updating the blog." });
-  }
-});
-
-//  Update blogArray by postId
-app.put("/api/parismemories/:postId/blogArray", async (req, res) => {
-  try {
-    const postId = req.params.postId;
-    const { newBlog } = req.body;
-
-    const updatedPost = await ParisMemories.findByIdAndUpdate(
-      postId,
-      { $push: { blogArray: newBlog } },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedPost) {
-      return res.status(404).json({ error: "Blog not found" });
-    }
-
-    res.status(200).json(updatedPost);
-  } catch (error) {
-    console.error("Error updating blogArray:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while updating the blogArray." });
-  }
-});
+  });
 
 // Delete a post by postId
 app.delete("/api/parismemories/:postId", async (req, res) => {
