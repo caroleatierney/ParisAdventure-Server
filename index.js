@@ -5,7 +5,7 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const connectDB = require("./connectDB");
-const ParisMemories = require("./models/ParisMemories");
+const ParisMemories = require("./Models/ParisMemories");
 const mongoose = require("mongoose");
 
 // ******************************
