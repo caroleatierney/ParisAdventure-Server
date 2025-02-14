@@ -45,6 +45,10 @@ const BlogSchema = new Schema({
       },
     },
   ],
+  tag: {
+    type: String,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("ParisMemories", BlogSchema);
